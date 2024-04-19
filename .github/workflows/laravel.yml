@@ -1,0 +1,62 @@
+name: Laravel CI/CD
+
+on:
+  push:
+    branches:
+      - "main"
+      - "develop"
+      - "feature/**"
+      - "release/**"
+      - "hotfix/**"
+  pull_request:
+    branches:
+      - "main"
+      - "develop"
+      - "feature/**"
+      - "release/**"
+      - "hotfix/**"
+
+jobs:
+  laravel-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up PHP
+      uses: shivammathur/setup-php@15c43e89cdef867065b0213be354c2841860869e
+      with:
+        php-version: '8.1'
+
+    - name: Copy .env
+      run: php -r "file_exists('.env') || copy('.env.example', '.env');"
+      working-directory: demo
+
+    - name: Install Dependencies
+      run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist --ignore-platform-reqs
+      working-directory: demo
+
+    - name: Generate key
+      run: php artisan key:generate
+      working-directory: demo
+
+    - name: Directory Permissions
+      run: chmod -R 777 storage bootstrap/cache
+      working-directory: demo
+
+    - name: Create Database
+      run: |
+        mkdir -p database
+        touch database/database.sqlite
+      working-directory: demo
+
+
+  deploy:
+    needs: laravel-tests
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Deploy to Production
+      run: ./deploy_script.sh
+      working-directory: demo
