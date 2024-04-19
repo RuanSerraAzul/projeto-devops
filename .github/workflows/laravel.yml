@@ -49,12 +49,10 @@ jobs:
         touch database/database.sqlite
       working-directory: demo
 
-    - name: Execute tests (Unit and Feature tests) via PHPUnit/Pest
-      env:
-        DB_CONNECTION: sqlite
-        DB_DATABASE: database/database.sqlite
-      run: php artisan test
+    - name: Execute tests (Unit and Feature tests) via PHPUnit
+      run: vendor/bin/phpunit
       working-directory: demo
+
 
   deploy:
     needs: laravel-tests
