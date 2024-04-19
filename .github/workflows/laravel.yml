@@ -32,7 +32,7 @@ jobs:
       working-directory: demo
 
     - name: Install Dependencies
-      run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
+      run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist --ignore-platform-reqs
       working-directory: demo
 
     - name: Generate key
