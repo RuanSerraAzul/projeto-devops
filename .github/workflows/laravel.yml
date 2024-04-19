@@ -26,25 +26,35 @@ jobs:
       uses: shivammathur/setup-php@15c43e89cdef867065b0213be354c2841860869e
       with:
         php-version: '8.0'
-    - name: Change to the directory with laravel
-      run: cd demo
+
     - name: Copy .env
       run: php -r "file_exists('.env') || copy('.env.example', '.env');"
+      working-directory: demo
+
     - name: Install Dependencies
-      run: composer install 
+      run: composer install
+      working-directory: demo
+
     - name: Generate key
       run: php artisan key:generate
+      working-directory: demo
+
     - name: Directory Permissions
       run: chmod -R 777 storage bootstrap/cache
+      working-directory: demo
+
     - name: Create Database
       run: |
         mkdir -p database
         touch database/database.sqlite
+      working-directory: demo
+
     - name: Execute tests (Unit and Feature tests) via PHPUnit/Pest
       env:
         DB_CONNECTION: sqlite
         DB_DATABASE: database/database.sqlite
       run: php artisan test
+      working-directory: demo
 
   deploy:
     needs: laravel-tests
@@ -52,6 +62,7 @@ jobs:
     if: github.ref == 'refs/heads/main'
     steps:
     - uses: actions/checkout@v3
+
     - name: Deploy to Production
       run: ./deploy_script.sh
-        
+      working-directory: demo
