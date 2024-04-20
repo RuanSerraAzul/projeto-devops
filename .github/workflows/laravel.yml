@@ -72,4 +72,4 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
 
       - name: Deploy to AWS EC2
-        run: ssh ${{ secrets.AWS_INSTANCE_IP }} "cd /var/www/html && git pull origin master && composer install && php artisan migrate - force && php artisan optimize"
+        run: ssh ${{ secrets.AWS_INSTANCE_IP }} "cd /projeto/demo && git pull origin master && composer install && php artisan migrate - force && php artisan optimize"
