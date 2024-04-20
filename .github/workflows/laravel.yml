@@ -63,6 +63,7 @@ jobs:
 
       - name: Install dependencies
         run: composer install --no-dev --prefer-dist
+        working-directory: demo
 
       - name: Set up AWS CLI
         uses: aws-actions/configure-aws-credentials@v1
